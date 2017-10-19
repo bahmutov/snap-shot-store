@@ -18,6 +18,43 @@ npm install --save snap-shot-store
 
 ## Use
 
+```js
+const { initStore } = require('snap-shot-store')
+const snapshot = initStore()
+// store / check values by name
+snapshot({
+  name: 'foo',
+  value: 1
+})
+// can use list of names
+snapshot({
+  name: ['bar', 'baz'],
+  value: 2
+})
+// get current store object
+const store = snapshot()
+// store is
+// {foo: 1, bar: {baz: 2}}
+```
+
+Can pass options to control store behavior. For example
+
+```js
+const isCI = require('is-ci')
+const { initStore } = require('snap-shot-store')
+const snapshot = initStore()
+snapshot({
+  name: 'foo',
+  value: 1,
+  opts: {
+    ci: isCI
+  }
+})
+// will store value locally, but not on CI
+// on CI an attempt to store / change value
+// will raise an exception
+```
+
 ### Small print
 
 Author: Gleb Bahmutov &lt;gleb.bahmutov@gmail.com&gt; &copy; 2017

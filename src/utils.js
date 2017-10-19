@@ -8,6 +8,7 @@ const formKey = (specName, oneIndex) => `${specName} ${oneIndex}`
 const isName = R.anyPass([is.unemptyString, is.strings])
 const nameLens = name =>
   is.unemptyString(name) ? R.lensProp(name) : R.lensPath(name)
+const fullName = name => (is.unemptyString(name) ? name : name.join(' - '))
 
 // TODO allow list of strings for name
 function findValue ({ snapshots, name, opts = {} }) {
@@ -66,7 +67,7 @@ const isValidCompareResult = is.schema({
 function raiseIfDifferent ({ value, expected, specName, compare }) {
   la(value, 'missing value to compare', value)
   la(expected, 'missing expected value', expected)
-  la(is.unemptyString(specName), 'missing spec name', specName)
+  la(isName(specName), 'missing spec name', specName)
 
   const result = compare({ expected, value })
   la(
@@ -80,7 +81,7 @@ function raiseIfDifferent ({ value, expected, specName, compare }) {
   )
 
   result.orElse(message => {
-    debug('Test "%s" snapshot difference', specName)
+    debug('Test "%s" snapshot difference', fullName(specName))
     la(is.unemptyString(message), 'missing err string', message)
     console.log(message)
     throw new Error(message)

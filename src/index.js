@@ -42,7 +42,7 @@ function initStore (snapshots) {
 
     const setOrCheckValue = any => {
       const value = utils.strip(any)
-      const expected = utils.findStoredValue({
+      const expected = utils.findValue({
         snapshots: currentSnapshots,
         name,
         opts
@@ -67,7 +67,7 @@ function initStore (snapshots) {
         }
 
         const storedValue = store(value)
-        utils.storeValue({
+        currentSnapshots = utils.storeValue({
           snapshots: currentSnapshots,
           name,
           value: storedValue,

@@ -26,7 +26,11 @@ describe('snap-shot-store', () => {
     // it is a different reference
     la(updatedStore !== store, 'returns different object')
     // it was modified
-    la(!R.equals(updatedStore, store), 'should have been modified')
+    la(
+      !R.equals(updatedStore, store),
+      'should have been modified',
+      updatedStore
+    )
   })
 
   it('throws on different value', () => {

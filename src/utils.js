@@ -5,10 +5,14 @@ const Result = require('folktale/result')
 const R = require('ramda')
 
 const formKey = (specName, oneIndex) => `${specName} ${oneIndex}`
+const isName = R.anyPass([is.unemptyString, is.strings])
+const nameLens = name =>
+  is.unemptyString(name) ? R.lensProp(name) : R.lensPath(name)
 
 // TODO allow list of strings for name
-function findStoredValue ({ snapshots, name, opts = {} }) {
-  la(is.unemptyString(name), 'missing name to find spec for', name)
+function findValue ({ snapshots, name, opts = {} }) {
+  la(isName(name), 'invalid name to find spec for', name)
+
   if (opts.update) {
     // let the new value replace the current value
     return
@@ -18,13 +22,15 @@ function findStoredValue ({ snapshots, name, opts = {} }) {
     return
   }
 
-  const key = name
-  debug('key "%s"', name)
-  if (!(key in snapshots)) {
-    return
-  }
+  const lens = nameLens(name)
+  return R.view(lens, snapshots)
+  // const key = name
+  // debug('key "%s"', name)
+  // if (!(key in snapshots)) {
+  //   return
+  // }
 
-  return snapshots[key]
+  // return snapshots[key]
 }
 
 // given an object, and a key (or keys), and a value
@@ -35,7 +41,7 @@ function storeValue ({ snapshots, name, value, opts = {} }) {
   la(is.object(snapshots), 'missing snapshots object', snapshots)
   la(is.unemptyString(name) || is.strings(name), 'missing name', name)
 
-  const lens = is.unemptyString(name) ? R.lensProp(name) : R.lensPath(name)
+  const lens = nameLens(name)
 
   if (opts.show || opts.dryRun) {
     console.log('updated snapshot "%s"', name)
@@ -100,7 +106,7 @@ function strip (o) {
 }
 
 module.exports = {
-  findStoredValue,
+  findValue,
   storeValue,
   raiseIfDifferent,
   compare,

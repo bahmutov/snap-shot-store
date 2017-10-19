@@ -3,7 +3,6 @@
 const la = require('lazy-ass')
 const is = require('check-more-types')
 const R = require('ramda')
-const isCI = require('is-ci')
 const debug = require('debug')('snap-shot-store')
 const utils = require('./utils')
 
@@ -37,9 +36,8 @@ function initStore (snapshots = {}) {
     la(is.fn(raiser), 'invalid raiser function', raiser)
     la(is.maybe.unemptyString(comment), 'wrong comment type', comment)
 
-    if (!('ci' in opts)) {
-      debug('is CI environment? %s', isCI)
-      opts.ci = isCI
+    if ('ci' in opts) {
+      debug('is CI environment? %s', Boolean(opts.ci))
     }
 
     const setOrCheckValue = any => {

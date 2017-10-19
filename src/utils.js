@@ -102,7 +102,24 @@ function strip (o) {
   if (is.fn(o)) {
     return o
   }
-  return JSON.parse(JSON.stringify(o))
+  let stringified
+  try {
+    stringified = JSON.stringify(o)
+  } catch (e) {
+    console.error('Could not stringify value')
+    console.error('%j', o)
+    throw e
+  }
+
+  try {
+    const parsed = JSON.parse(stringified)
+    return parsed
+  } catch (e) {
+    console.error('Could not parse value from string')
+    console.error('%s', stringified)
+    console.error('from value %j', o)
+    throw e
+  }
 }
 
 module.exports = {

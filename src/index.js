@@ -13,6 +13,7 @@ function initStore (snapshots = {}) {
   return function snapShotCore (
     {
       what,
+      value,
       name,
       names,
       store = R.identity,
@@ -26,7 +27,10 @@ function initStore (snapshots = {}) {
       return currentSnapshots
     }
 
+    // a few aliases
+    what = what || value
     name = name || names
+
     la(utils.isName(name), 'missing or invalid name', name)
     la(is.fn(compare), 'missing compare function', compare)
     la(is.fn(store), 'invalid store function', store)

@@ -37,6 +37,20 @@ const store = snapshot()
 // {foo: 1, bar: {baz: 2}}
 ```
 
+There are aliases for remembering
+
+```js
+snapshot({
+  name: 'foo',
+  value: 1
+})
+// is same as
+snapshot({
+  names: 'foo',
+  what: 1
+})
+```
+
 Can pass options to control store behavior. For example
 
 ```js

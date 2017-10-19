@@ -18,6 +18,26 @@ describe('snap-shot-store', () => {
     la(is.fn(snapshot))
   })
 
+  it('has value as alias to what', () => {
+    const snapshot = initStore()
+    snapshot({
+      value: 'foo',
+      name: 'bar'
+    })
+    const store = snapshot()
+    la(R.equals(store, { bar: 'foo' }, store))
+  })
+
+  it('has names as alias to name', () => {
+    const snapshot = initStore()
+    snapshot({
+      value: 'foo',
+      names: 'bar'
+    })
+    const store = snapshot()
+    la(R.equals(store, { bar: 'foo' }, store))
+  })
+
   it('returns a function to compare and store values', () => {
     const store = {}
     const snapshot = initStore(store)

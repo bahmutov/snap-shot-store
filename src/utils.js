@@ -2,6 +2,7 @@ const la = require('lazy-ass')
 const is = require('check-more-types')
 const debug = require('debug')('snap-shot-store')
 const Result = require('folktale/result')
+const R = require('ramda')
 
 const formKey = (specName, oneIndex) => `${specName} ${oneIndex}`
 
@@ -18,7 +19,7 @@ function findStoredValue ({ snapshots, name, opts = {} }) {
   }
 
   const key = name
-  debug('key "%s"', key)
+  debug('key "%s"', name)
   if (!(key in snapshots)) {
     return
   }
@@ -26,23 +27,27 @@ function findStoredValue ({ snapshots, name, opts = {} }) {
   return snapshots[key]
 }
 
-function storeValue ({ snapshots, name, value, ext, comment, opts = {} }) {
+// given an object, and a key (or keys), and a value
+// stores the value in the object
+// returns a new object
+function storeValue ({ snapshots, name, value, opts = {} }) {
   la(value !== undefined, 'cannot store undefined value')
   la(is.object(snapshots), 'missing snapshots object', snapshots)
-  la(is.unemptyString(name), 'missing name', name)
-  la(is.maybe.unemptyString(comment), 'invalid comment to store', comment)
+  la(is.unemptyString(name) || is.strings(name), 'missing name', name)
 
-  // TODO pass a lens
-  const key = name
-  if (!opts.dryRun) {
-    debug('updated snapshot by key "%s"', key)
-    snapshots[key] = value
-  }
+  const lens = is.unemptyString(name) ? R.lensProp(name) : R.lensPath(name)
 
   if (opts.show || opts.dryRun) {
-    console.log('updated snapshot "%s"', key)
+    console.log('updated snapshot "%s"', name)
     console.log(value)
   }
+
+  if (!opts.dryRun) {
+    debug('setting snapshot for name "%s"', name)
+    return R.set(lens, value, snapshots)
+  }
+
+  return snapshots
 }
 
 const isValidCompareResult = is.schema({
@@ -95,10 +100,10 @@ function strip (o) {
 }
 
 module.exports = {
-  findStoredValue: findStoredValue,
-  storeValue: storeValue,
-  raiseIfDifferent: raiseIfDifferent,
-  compare: compare,
-  strip: strip,
-  formKey: formKey
+  findStoredValue,
+  storeValue,
+  raiseIfDifferent,
+  compare,
+  strip,
+  formKey
 }

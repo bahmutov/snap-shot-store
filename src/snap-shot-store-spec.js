@@ -39,6 +39,24 @@ describe('snap-shot-store', () => {
     )
   })
 
+  it('stores several values', () => {
+    const snapshot = initStore()
+    snapshot({
+      name: 'foo',
+      what: 1
+    })
+    snapshot({
+      name: 'bar',
+      what: 2
+    })
+    const expected = {
+      foo: 1,
+      bar: 2
+    }
+    const values = snapshot()
+    la(R.equals(values, expected), values)
+  })
+
   it('throws on different value', () => {
     const store = {
       'first assertion': 40
@@ -48,10 +66,10 @@ describe('snap-shot-store', () => {
       is.raises(() => {
         snapshot({
           what: 42,
-          file: 'foo.js',
-          exactSpecName: 'first assertion'
+          name: 'first assertion'
         })
-        console.log(snapshot())
+        console.error('somehow updated value')
+        console.error(snapshot())
       })
     )
     la(R.equals(snapshot(), store), 'store is unchanged')

@@ -128,5 +128,6 @@ module.exports = {
   raiseIfDifferent,
   compare,
   strip,
-  isName
+  isName,
+  fullName
 }

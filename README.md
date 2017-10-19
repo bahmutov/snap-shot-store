@@ -55,6 +55,17 @@ snapshot({
 // will raise an exception
 ```
 
+A good set of environment variables to grab and pass as `opts` is
+
+```js
+const opts = {
+  show: Boolean(process.env.SNAPSHOT_SHOW),
+  dryRun: Boolean(process.env.SNAPSHOT_DRY),
+  update: Boolean(process.env.SNAPSHOT_UPDATE),
+  ci: Boolean(process.env.CI)
+}
+```
+
 ### Small print
 
 Author: Gleb Bahmutov &lt;gleb.bahmutov@gmail.com&gt; &copy; 2017

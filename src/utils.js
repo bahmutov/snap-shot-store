@@ -4,7 +4,6 @@ const debug = require('debug')('snap-shot-store')
 const Result = require('folktale/result')
 const R = require('ramda')
 
-const formKey = (specName, oneIndex) => `${specName} ${oneIndex}`
 const isName = R.anyPass([is.unemptyString, is.strings])
 const nameLens = name =>
   is.unemptyString(name) ? R.lensProp(name) : R.lensPath(name)
@@ -129,6 +128,5 @@ module.exports = {
   raiseIfDifferent,
   compare,
   strip,
-  formKey,
   isName
 }

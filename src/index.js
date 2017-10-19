@@ -56,7 +56,7 @@ function initStore (snapshots = {}) {
           console.log('current directory', process.cwd())
           console.log('new value to save: %j', value)
           // TODO return a lens instead!
-          const key = utils.formKey(name)
+          const key = utils.fullName(name)
           throw new Error(
             'Cannot store new snapshot value\n' +
               'for spec called "' +

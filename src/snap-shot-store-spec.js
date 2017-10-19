@@ -18,8 +18,7 @@ describe('snap-shot-store', () => {
     // synchronous
     snapshot({
       what: 42,
-      file: 'foo.js',
-      exactSpecName: 'first assertion'
+      name: 'first assertion'
     })
     // get updated store by calling without arguments
     const updatedStore = snapshot({})

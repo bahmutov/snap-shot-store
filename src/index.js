@@ -14,9 +14,7 @@ function initStore (snapshots) {
   return function snapShotCore (
     {
       what,
-      file,
-      __filename,
-      exactSpecName,
+      name,
       store = R.identity,
       compare = utils.compare,
       raiser,
@@ -28,10 +26,7 @@ function initStore (snapshots) {
       return currentSnapshots
     }
 
-    const fileParameter = file || __filename
-    la(is.unemptyString(fileParameter), 'missing file', fileParameter)
-    la(is.unemptyString(exactSpecName), 'invalid exactSpecName', exactSpecName)
-
+    la(is.unemptyString(name), 'missing name', name)
     la(is.fn(compare), 'missing compare function', compare)
     la(is.fn(store), 'invalid store function', store)
     if (!raiser) {
@@ -49,8 +44,7 @@ function initStore (snapshots) {
       const value = utils.strip(any)
       const expected = utils.findStoredValue({
         snapshots: currentSnapshots,
-        file: fileParameter,
-        exactSpecName,
+        name,
         opts
       })
       if (expected === undefined) {
@@ -58,14 +52,11 @@ function initStore (snapshots) {
           console.log('current directory', process.cwd())
           console.log('new value to save: %j', value)
           // TODO return a lens instead!
-          const key = utils.formKey(exactSpecName)
+          const key = utils.formKey(name)
           throw new Error(
             'Cannot store new snapshot value\n' +
-              'in ' +
-              fileParameter +
-              '\n' +
               'for spec called "' +
-              exactSpecName +
+              name +
               '"\n' +
               'test key "' +
               key +
@@ -78,8 +69,7 @@ function initStore (snapshots) {
         const storedValue = store(value)
         utils.storeValue({
           snapshots: currentSnapshots,
-          file: fileParameter,
-          exactSpecName,
+          name,
           value: storedValue,
           comment,
           opts
@@ -87,11 +77,11 @@ function initStore (snapshots) {
         return storedValue
       }
 
-      debug('found snapshot for "%s", value', exactSpecName, expected)
+      debug('found snapshot for "%s", value', name, expected)
       raiser({
         value,
         expected,
-        specName: exactSpecName,
+        specName: name,
         compare
       })
       return expected

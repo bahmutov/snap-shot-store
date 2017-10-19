@@ -5,18 +5,19 @@ const Result = require('folktale/result')
 
 const formKey = (specName, oneIndex) => `${specName} ${oneIndex}`
 
-function findStoredValue ({ snapshots, file, exactSpecName, opts = {} }) {
-  la(is.unemptyString(file), 'missing file to find spec for', file)
+// TODO allow list of strings for name
+function findStoredValue ({ snapshots, name, opts = {} }) {
+  la(is.unemptyString(name), 'missing name to find spec for', name)
   if (opts.update) {
     // let the new value replace the current value
     return
   }
   if (!snapshots) {
-    debug('there are no snapshots to find "%s"', exactSpecName)
+    debug('there are no snapshots to find "%s"', name)
     return
   }
 
-  const key = exactSpecName
+  const key = name
   debug('key "%s"', key)
   if (!(key in snapshots)) {
     return
@@ -25,30 +26,21 @@ function findStoredValue ({ snapshots, file, exactSpecName, opts = {} }) {
   return snapshots[key]
 }
 
-function storeValue ({
-  snapshots,
-  file,
-  exactSpecName,
-  value,
-  ext,
-  comment,
-  opts = {}
-}) {
+function storeValue ({ snapshots, name, value, ext, comment, opts = {} }) {
   la(value !== undefined, 'cannot store undefined value')
-  la(is.unemptyString(file), 'missing filename', file)
   la(is.object(snapshots), 'missing snapshots object', snapshots)
-  la(is.unemptyString(exactSpecName), 'missing exact spec name', exactSpecName)
+  la(is.unemptyString(name), 'missing name', name)
   la(is.maybe.unemptyString(comment), 'invalid comment to store', comment)
 
   // TODO pass a lens
-  const key = exactSpecName
+  const key = name
   if (!opts.dryRun) {
     debug('updated snapshot by key "%s"', key)
     snapshots[key] = value
   }
 
   if (opts.show || opts.dryRun) {
-    console.log('updated snapshot "%s" for file %s', key, file)
+    console.log('updated snapshot "%s"', key)
     console.log(value)
   }
 }

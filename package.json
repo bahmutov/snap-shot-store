@@ -59,7 +59,8 @@
     "secure": "nsp check",
     "size": "t=\"$(npm pack .)\"; wc -c \"${t}\"; tar tvf \"${t}\"; rm \"${t}\";",
     "test": "npm run unit",
-    "unit": "mocha src/*-spec.js"
+    "unit": "mocha src/*-spec.js",
+    "watch": "mocha --watch src/*-spec.js"
   },
   "release": {
     "analyzeCommits": "simple-commit-message"

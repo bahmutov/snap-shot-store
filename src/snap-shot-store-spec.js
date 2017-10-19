@@ -3,6 +3,7 @@
 const la = require('lazy-ass')
 const is = require('check-more-types')
 const R = require('ramda')
+const itsName = require('its-name')
 
 /* eslint-env mocha */
 const { initStore } = require('.')
@@ -10,6 +11,11 @@ const { initStore } = require('.')
 describe('snap-shot-store', () => {
   it('is a function', () => {
     la(is.fn(initStore))
+  })
+
+  it('initializes with empty object by default', () => {
+    const snapshot = initStore()
+    la(is.fn(snapshot))
   })
 
   it('returns a function to compare and store values', () => {
@@ -49,5 +55,27 @@ describe('snap-shot-store', () => {
       })
     )
     la(R.equals(snapshot(), store), 'store is unchanged')
+  })
+
+  context('nested test name', () => {
+    it('saves under test name', function () {
+      const names = itsName(this)
+      const store = {}
+      const snapshot = initStore(store)
+      // synchronous
+      snapshot({
+        what: 42,
+        name: names
+      })
+      const updated = snapshot()
+      const expected = {
+        'snap-shot-store': {
+          'nested test name': {
+            'saves under test name': 42
+          }
+        }
+      }
+      la(R.equals(updated, expected), updated)
+    })
   })
 })

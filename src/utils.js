@@ -111,5 +111,6 @@ module.exports = {
   raiseIfDifferent,
   compare,
   strip,
-  formKey
+  formKey,
+  isName
 }

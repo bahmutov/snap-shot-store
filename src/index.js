@@ -7,7 +7,7 @@ const isCI = require('is-ci')
 const debug = require('debug')('snap-shot-store')
 const utils = require('./utils')
 
-function initStore (snapshots) {
+function initStore (snapshots = {}) {
   la(is.object(snapshots), 'expected plain store object', snapshots)
   let currentSnapshots = R.clone(snapshots)
 
@@ -15,6 +15,7 @@ function initStore (snapshots) {
     {
       what,
       name,
+      names,
       store = R.identity,
       compare = utils.compare,
       raiser,
@@ -26,7 +27,8 @@ function initStore (snapshots) {
       return currentSnapshots
     }
 
-    la(is.unemptyString(name), 'missing name', name)
+    name = name || names
+    la(utils.isName(name), 'missing or invalid name', name)
     la(is.fn(compare), 'missing compare function', compare)
     la(is.fn(store), 'invalid store function', store)
     if (!raiser) {
